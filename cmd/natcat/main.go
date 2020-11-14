@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/hovercross/natcat/pkg/reader"
 	"github.com/nats-io/nats.go"
+	"github.com/nats-io/stan.go"
 )
 
 func main() {
@@ -24,12 +25,24 @@ func main() {
 	}
 	defer nc.Close()
 
+	pubFunc := nc.Publish
+
+	if cfg.Streaming {
+		sc, err := stan.Connect(cfg.StreamClusterID, cfg.Name, stan.NatsConn(nc))
+
+		if err != nil {
+			log.Fatalf("Unable to connect ot NATS Streaming: %v", err)
+		}
+
+		pubFunc = sc.Publish
+	}
+
 	cfg.printConfig()
 
 	log.Print("Connected to NATS")
 
 	r := reader.Reader{
-		Publish:           func(data []byte) error { return nc.Publish(cfg.Topic, data) }, // Just injects the publication topic
+		Publish:           func(data []byte) error { return pubFunc(cfg.Topic, data) }, // Just injects the publication topic
 		Input:             os.Stdin,
 		Wrap:              cfg.Wrap,
 		JSONInput:         cfg.WrapJSON,

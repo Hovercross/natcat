@@ -10,12 +10,14 @@ import (
 )
 
 type config struct {
-	Servers    string `env:"NATCAT_SERVERS" envDefault:"nats://localhost:4222"`
-	Topic      string `env:"NATCAT_TOPIC" envDefault:"natcat"`
-	Wrap       bool   `env:"NATCAT_WRAP" envDefault:"false"`
-	WrapJSON   bool   `env:"NATCAT_JSONINPUT" envDefault:"false"`
-	Name       string `env:"NATCAT_NAME" envDefault:"NatCat"`
-	BufferSize int    `env:"NATCAT_BUFFERSIZE"`
+	Servers         string `env:"NATCAT_SERVERS" envDefault:"nats://localhost:4222"`
+	Topic           string `env:"NATCAT_TOPIC" envDefault:"natcat"`
+	Wrap            bool   `env:"NATCAT_WRAP" envDefault:"false"`
+	WrapJSON        bool   `env:"NATCAT_JSONINPUT" envDefault:"false"`
+	Name            string `env:"NATCAT_NAME" envDefault:"NatCat"`
+	BufferSize      int    `env:"NATCAT_BUFFERSIZE"`
+	Streaming       bool   `env:"NATCAT_STREAMING" envDefault:"false"`
+	StreamClusterID string `env:"NATCAT_CLUSTERID" envDefault:"test-cluster"`
 }
 
 func getConfig() (config, error) {
